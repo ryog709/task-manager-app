@@ -210,7 +210,7 @@ export const TaskProvider = ({ children }) => {
       try {
         const savedTasks = storage.getTasks();
         dispatch({ type: 'LOAD_TASKS', payload: savedTasks });
-      } catch (error) {
+      } catch {
         dispatch({ type: 'SET_ERROR', payload: 'Failed to load tasks' });
       }
     };
@@ -277,6 +277,7 @@ export const TaskProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTask = () => {
   const context = useContext(TaskContext);
   if (!context) {

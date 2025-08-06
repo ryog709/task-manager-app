@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTask } from '../../contexts/TaskContext';
 import { CATEGORIES } from '../../utils/constants';
-import { formatDate, isToday, isThisWeek, isThisMonth } from '../../utils/date';
+import { isToday, isThisWeek, isThisMonth } from '../../utils/date';
 import { useEscapeKey } from '../../hooks/useKeyboard';
 import styles from './StatsModal.module.css';
 
