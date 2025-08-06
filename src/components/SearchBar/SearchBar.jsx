@@ -29,7 +29,7 @@ const SearchBar = () => {
           className={styles.searchInput}
         />
         {localSearch && (
-          <button 
+          <button
             onClick={handleClear}
             className={styles.clearButton}
             aria-label="検索をクリア"
@@ -38,7 +38,7 @@ const SearchBar = () => {
           </button>
         )}
       </div>
-      
+
       <div className={styles.filterSection}>
         <FilterButtons />
       </div>
@@ -57,7 +57,7 @@ const FilterButtons = () => {
 
   return (
     <div className={styles.filterButtons}>
-      {filters.map(filter => (
+      {filters.map((filter) => (
         <button
           key={filter.key}
           onClick={() => actions.setFilter(filter.key)}

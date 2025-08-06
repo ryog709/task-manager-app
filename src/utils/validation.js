@@ -41,22 +41,23 @@ export const validateTask = (task) => {
 
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 };
 
 export const sanitizeTaskText = (text) => {
-  return text
-    .trim()
-    .replace(/[<>]/g, '')
-    .substring(0, 500);
+  return text.trim().replace(/[<>]/g, '').substring(0, 500);
 };
 
 export const generateTaskId = () => {
   return `task_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 };
 
-export const createNewTask = (text, category, priority = TASK_PRIORITY.MEDIUM) => {
+export const createNewTask = (
+  text,
+  category,
+  priority = TASK_PRIORITY.MEDIUM
+) => {
   const now = new Date().toISOString();
   return {
     id: generateTaskId(),
@@ -69,6 +70,6 @@ export const createNewTask = (text, category, priority = TASK_PRIORITY.MEDIUM) =
     completedAt: null,
     deletedAt: null,
     order: Date.now(),
-    tags: []
+    tags: [],
   };
 };

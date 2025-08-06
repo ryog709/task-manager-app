@@ -17,7 +17,9 @@ describe('App', () => {
 
   it('renders task input form', () => {
     render(<App />);
-    expect(screen.getByPlaceholderText('新しいタスクを入力...')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('新しいタスクを入力...')
+    ).toBeInTheDocument();
     expect(screen.getByText('追加')).toBeInTheDocument();
   });
 });

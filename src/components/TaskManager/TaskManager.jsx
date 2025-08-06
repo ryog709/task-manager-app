@@ -12,9 +12,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import {
-  useSortable,
-} from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useTask } from '../../contexts/TaskContext';
 import SearchBar from '../SearchBar/SearchBar';
@@ -22,33 +20,35 @@ import styles from './TaskManager.module.css';
 
 const TaskManager = ({ category }) => {
   const { state, actions } = useTask();
-  
+
   const filterTasks = (tasks) => {
     let filtered = tasks;
-    
+
     // カテゴリフィルタ
-    filtered = filtered.filter(task => task.category === category);
-    
+    filtered = filtered.filter((task) => task.category === category);
+
     // ステータスフィルタ
     if (state.filter !== 'all') {
-      filtered = filtered.filter(task => task.status === state.filter);
+      filtered = filtered.filter((task) => task.status === state.filter);
     }
-    
+
     // 検索フィルタ
     if (state.searchQuery) {
       const query = state.searchQuery.toLowerCase();
-      filtered = filtered.filter(task => 
+      filtered = filtered.filter((task) =>
         task.text.toLowerCase().includes(query)
       );
     }
-    
+
     return filtered;
   };
-  
+
   const filteredTasks = filterTasks(state.tasks);
-  
-  const activeTasks = filteredTasks.filter(task => task.status === 'active');
-  const completedTasks = filteredTasks.filter(task => task.status === 'completed');
+
+  const activeTasks = filteredTasks.filter((task) => task.status === 'active');
+  const completedTasks = filteredTasks.filter(
+    (task) => task.status === 'completed'
+  );
 
   const handleAddTask = (text) => {
     if (text.trim()) {
@@ -108,7 +108,7 @@ const TaskManager = ({ category }) => {
                   <h3 className={styles.groupTitle}>
                     完了したタスク ({completedTasks.length})
                   </h3>
-                  <button 
+                  <button
                     onClick={actions.clearCompleted}
                     className={styles.clearButton}
                   >
@@ -145,7 +145,11 @@ const TaskInput = ({ onAdd }) => {
         className={styles.input}
         maxLength={500}
       />
-      <button type="submit" disabled={!text.trim()} className={styles.addButton}>
+      <button
+        type="submit"
+        disabled={!text.trim()}
+        className={styles.addButton}
+      >
         追加
       </button>
     </form>
@@ -165,9 +169,9 @@ const TaskList = ({ tasks }) => {
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      const oldIndex = tasks.findIndex(task => task.id === active.id);
-      const newIndex = tasks.findIndex(task => task.id === over.id);
-      
+      const oldIndex = tasks.findIndex((task) => task.id === active.id);
+      const newIndex = tasks.findIndex((task) => task.id === over.id);
+
       if (tasks.length > 0) {
         const category = tasks[0].category;
         actions.reorderTasks(category, oldIndex, newIndex);
@@ -175,7 +179,7 @@ const TaskList = ({ tasks }) => {
     }
   };
 
-  const taskIds = tasks.map(task => task.id);
+  const taskIds = tasks.map((task) => task.id);
 
   return (
     <DndContext
@@ -185,7 +189,7 @@ const TaskList = ({ tasks }) => {
     >
       <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
         <div className={styles.taskList}>
-          {tasks.map(task => (
+          {tasks.map((task) => (
             <SortableTaskItem key={task.id} task={task} />
           ))}
         </div>
@@ -217,7 +221,7 @@ const SortableTaskItem = ({ task }) => {
       {...attributes}
       className={`${styles.taskItem} ${task.status === 'completed' ? styles.completed : ''} ${isDragging ? styles.dragging : ''}`}
     >
-      <div 
+      <div
         {...listeners}
         className={styles.dragHandle}
         aria-label="タスクをドラッグして並び替え"
@@ -231,7 +235,7 @@ const SortableTaskItem = ({ task }) => {
 
 const TaskItem = ({ task }) => {
   const { actions } = useTask();
-  
+
   const handleToggle = () => {
     if (task.status === 'active') {
       actions.completeTask(task.id);
@@ -246,17 +250,19 @@ const TaskItem = ({ task }) => {
 
   return (
     <>
-      <button 
+      <button
         onClick={handleToggle}
         className={styles.checkbox}
-        aria-label={task.status === 'active' ? 'タスクを完了' : 'タスクを未完了に戻す'}
+        aria-label={
+          task.status === 'active' ? 'タスクを完了' : 'タスクを未完了に戻す'
+        }
       >
         {task.status === 'completed' ? '✅' : '⚪'}
       </button>
-      
+
       <span className={styles.taskText}>{task.text}</span>
-      
-      <button 
+
+      <button
         onClick={handleDelete}
         className={styles.deleteButton}
         aria-label="タスクを削除"

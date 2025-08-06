@@ -17,7 +17,7 @@ function App() {
           <Header />
           <main className="main">
             <div className="container">
-              <TabNavigation 
+              <TabNavigation
                 currentCategory={currentCategory}
                 onCategoryChange={setCurrentCategory}
               />

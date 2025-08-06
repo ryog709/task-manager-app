@@ -125,23 +125,23 @@
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
   }
-  
+
   .searchBox {
     margin-bottom: var(--spacing-sm);
   }
-  
+
   .filterButtons {
     gap: var(--spacing-xs);
   }
-  
+
   .filterButton {
     padding: var(--spacing-xs) var(--spacing-sm);
   }
-  
+
   .filterIcon {
     font-size: var(--font-size-xs);
   }
-  
+
   .filterLabel {
     font-size: var(--font-size-xs);
   }

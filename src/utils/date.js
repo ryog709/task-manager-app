@@ -19,7 +19,7 @@ export const formatDate = (dateString) => {
     return date.toLocaleDateString('ja-JP', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
 };

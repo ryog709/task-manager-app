@@ -8,10 +8,12 @@ const Header = () => {
   const { isDark, toggleTheme } = useTheme();
   const { state } = useTask();
   const [showStats, setShowStats] = useState(false);
-  
-  const activeTasks = state.tasks.filter(task => task.status === 'active');
-  const completedTasks = state.tasks.filter(task => task.status === 'completed');
-  
+
+  const activeTasks = state.tasks.filter((task) => task.status === 'active');
+  const completedTasks = state.tasks.filter(
+    (task) => task.status === 'completed'
+  );
+
   return (
     <header className={styles.header}>
       <div className="container">
@@ -26,35 +28,32 @@ const Header = () => {
                 {activeTasks.length} アクティブ
               </span>
               <span className={styles.separator}>•</span>
-              <span className={styles.stat}>
-                {completedTasks.length} 完了
-              </span>
+              <span className={styles.stat}>{completedTasks.length} 完了</span>
             </div>
           </div>
-          
+
           <div className={styles.actions}>
-            <button 
+            <button
               className={styles.statsButton}
               onClick={() => setShowStats(true)}
               aria-label="統計を表示"
             >
               📊
             </button>
-            <button 
+            <button
               className={styles.themeToggle}
               onClick={toggleTheme}
-              aria-label={isDark ? 'ライトモードに切り替え' : 'ダークモードに切り替え'}
+              aria-label={
+                isDark ? 'ライトモードに切り替え' : 'ダークモードに切り替え'
+              }
             >
               {isDark ? '☀️' : '🌙'}
             </button>
           </div>
         </div>
       </div>
-      
-      <StatsModal 
-        isOpen={showStats} 
-        onClose={() => setShowStats(false)} 
-      />
+
+      <StatsModal isOpen={showStats} onClose={() => setShowStats(false)} />
     </header>
   );
 };

@@ -42,7 +42,7 @@ class StorageManager {
 
   clear() {
     try {
-      Object.keys(STORAGE_KEYS).forEach(key => {
+      Object.keys(STORAGE_KEYS).forEach((key) => {
         this.storage.removeItem(STORAGE_KEYS[key]);
       });
       return true;
@@ -61,11 +61,13 @@ class StorageManager {
   }
 
   getSettings() {
-    return this.get(STORAGE_KEYS.SETTINGS) || {
-      theme: 'system',
-      animations: true,
-      notifications: false
-    };
+    return (
+      this.get(STORAGE_KEYS.SETTINGS) || {
+        theme: 'system',
+        animations: true,
+        notifications: false,
+      }
+    );
   }
 
   setSettings(settings) {
@@ -73,12 +75,14 @@ class StorageManager {
   }
 
   getStats() {
-    return this.get(STORAGE_KEYS.STATS) || {
-      totalCreated: 0,
-      totalCompleted: 0,
-      totalDeleted: 0,
-      categoryStats: {}
-    };
+    return (
+      this.get(STORAGE_KEYS.STATS) || {
+        totalCreated: 0,
+        totalCompleted: 0,
+        totalDeleted: 0,
+        categoryStats: {},
+      }
+    );
   }
 
   setStats(stats) {
@@ -90,7 +94,7 @@ class StorageManager {
       tasks: this.getTasks(),
       settings: this.getSettings(),
       stats: this.getStats(),
-      exportedAt: new Date().toISOString()
+      exportedAt: new Date().toISOString(),
     };
     return JSON.stringify(data, null, 2);
   }

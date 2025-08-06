@@ -48,6 +48,6 @@ export const useBreakpoint = () => {
     isTablet,
     isDesktop,
     isLarge,
-    device: isMobile ? 'mobile' : isTablet ? 'tablet' : 'desktop'
+    device: isMobile ? 'mobile' : isTablet ? 'tablet' : 'desktop',
   };
 };

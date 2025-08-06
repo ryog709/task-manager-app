@@ -8,14 +8,16 @@ export const useKeyboard = (callbacks = {}) => {
     const handleKeyDown = (event) => {
       const { key, ctrlKey, metaKey, shiftKey, altKey } = event;
       const modifierKey = ctrlKey || metaKey;
-      
+
       const keyCombo = [
         modifierKey && 'cmd',
         ctrlKey && 'ctrl',
-        altKey && 'alt', 
+        altKey && 'alt',
         shiftKey && 'shift',
-        key.toLowerCase()
-      ].filter(Boolean).join('+');
+        key.toLowerCase(),
+      ]
+        .filter(Boolean)
+        .join('+');
 
       // Check for exact matches first
       if (callbacksRef.current[keyCombo]) {
@@ -45,12 +47,12 @@ export const useKeyboard = (callbacks = {}) => {
 
 export const useEscapeKey = (callback) => {
   useKeyboard({
-    escape: callback
+    escape: callback,
   });
 };
 
 export const useEnterKey = (callback) => {
   useKeyboard({
-    enter: callback
+    enter: callback,
   });
 };

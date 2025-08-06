@@ -9,11 +9,12 @@ export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useLocalStorage('theme', THEME.SYSTEM);
   const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
 
-  const isDark = theme === THEME.DARK || (theme === THEME.SYSTEM && prefersDark);
+  const isDark =
+    theme === THEME.DARK || (theme === THEME.SYSTEM && prefersDark);
 
   useEffect(() => {
     const root = document.documentElement;
-    
+
     if (isDark) {
       root.setAttribute('data-theme', 'dark');
     } else {
@@ -35,13 +36,11 @@ export const ThemeProvider = ({ children }) => {
     isDark,
     toggleTheme,
     setTheme,
-    setSystemTheme
+    setSystemTheme,
   };
 
   return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
 };
 

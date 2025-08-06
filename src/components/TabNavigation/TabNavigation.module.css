@@ -77,17 +77,17 @@
   .nav {
     padding: var(--spacing-md) 0;
   }
-  
+
   .tabs {
     padding: 0 var(--spacing-md);
     gap: var(--spacing-sm);
   }
-  
+
   .tab {
     padding: var(--spacing-sm) var(--spacing-md);
     flex-shrink: 0;
   }
-  
+
   .label {
     font-size: var(--font-size-sm);
   }

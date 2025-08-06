@@ -8,7 +8,7 @@ const TabNavigation = ({ currentCategory, onCategoryChange }) => {
 
   const getCategoryCount = (category) => {
     return state.tasks.filter(
-      task => task.category === category && task.status === 'active'
+      (task) => task.category === category && task.status === 'active'
     ).length;
   };
 
@@ -18,7 +18,7 @@ const TabNavigation = ({ currentCategory, onCategoryChange }) => {
         {Object.entries(CATEGORIES).map(([key, category]) => {
           const count = getCategoryCount(key);
           const isActive = currentCategory === key;
-          
+
           return (
             <button
               key={key}
@@ -29,7 +29,10 @@ const TabNavigation = ({ currentCategory, onCategoryChange }) => {
               <span className={styles.icon}>{category.icon}</span>
               <span className={styles.label}>{category.label}</span>
               {count > 0 && (
-                <span className={styles.badge} style={{ backgroundColor: category.color }}>
+                <span
+                  className={styles.badge}
+                  style={{ backgroundColor: category.color }}
+                >
                   {count}
                 </span>
               )}

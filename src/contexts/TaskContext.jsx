@@ -12,7 +12,7 @@ const taskReducer = (state, action) => {
         ...state,
         tasks: action.payload,
         loading: false,
-        error: null
+        error: null,
       };
     }
 
@@ -22,170 +22,182 @@ const taskReducer = (state, action) => {
         action.payload.category,
         action.payload.priority
       );
-      
+
       const validation = validateTask(newTask);
       if (!validation.isValid) {
         return {
           ...state,
-          error: validation.errors.join(', ')
+          error: validation.errors.join(', '),
         };
       }
 
       return {
         ...state,
         tasks: [...state.tasks, newTask],
-        error: null
+        error: null,
       };
     }
 
     case 'UPDATE_TASK': {
-      const updatedTasks = state.tasks.map(task =>
+      const updatedTasks = state.tasks.map((task) =>
         task.id === action.payload.id
-          ? { ...task, ...action.payload.updates, updatedAt: new Date().toISOString() }
+          ? {
+              ...task,
+              ...action.payload.updates,
+              updatedAt: new Date().toISOString(),
+            }
           : task
       );
-      
+
       return {
         ...state,
         tasks: updatedTasks,
-        error: null
+        error: null,
       };
     }
 
     case 'DELETE_TASK': {
-      const updatedTasks = state.tasks.map(task =>
+      const updatedTasks = state.tasks.map((task) =>
         task.id === action.payload
-          ? { 
-              ...task, 
+          ? {
+              ...task,
               status: TASK_STATUS.DELETED,
               deletedAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
+              updatedAt: new Date().toISOString(),
             }
           : task
       );
-      
+
       return {
         ...state,
         tasks: updatedTasks,
-        error: null
+        error: null,
       };
     }
 
     case 'RESTORE_TASK': {
-      const updatedTasks = state.tasks.map(task =>
+      const updatedTasks = state.tasks.map((task) =>
         task.id === action.payload
-          ? { 
-              ...task, 
+          ? {
+              ...task,
               status: TASK_STATUS.ACTIVE,
               deletedAt: null,
-              updatedAt: new Date().toISOString()
+              updatedAt: new Date().toISOString(),
             }
           : task
       );
-      
+
       return {
         ...state,
         tasks: updatedTasks,
-        error: null
+        error: null,
       };
     }
 
     case 'COMPLETE_TASK': {
-      const updatedTasks = state.tasks.map(task =>
+      const updatedTasks = state.tasks.map((task) =>
         task.id === action.payload
-          ? { 
-              ...task, 
+          ? {
+              ...task,
               status: TASK_STATUS.COMPLETED,
               completedAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
+              updatedAt: new Date().toISOString(),
             }
           : task
       );
-      
+
       return {
         ...state,
         tasks: updatedTasks,
-        error: null
+        error: null,
       };
     }
 
     case 'UNCOMPLETE_TASK': {
-      const updatedTasks = state.tasks.map(task =>
+      const updatedTasks = state.tasks.map((task) =>
         task.id === action.payload
-          ? { 
-              ...task, 
+          ? {
+              ...task,
               status: TASK_STATUS.ACTIVE,
               completedAt: null,
-              updatedAt: new Date().toISOString()
+              updatedAt: new Date().toISOString(),
             }
           : task
       );
-      
+
       return {
         ...state,
         tasks: updatedTasks,
-        error: null
+        error: null,
       };
     }
 
     case 'REORDER_TASKS': {
       const { category, oldIndex, newIndex } = action.payload;
-      const categoryTasks = state.tasks.filter(task => task.category === category);
-      const otherTasks = state.tasks.filter(task => task.category !== category);
-      
+      const categoryTasks = state.tasks.filter(
+        (task) => task.category === category
+      );
+      const otherTasks = state.tasks.filter(
+        (task) => task.category !== category
+      );
+
       const reorderedTasks = [...categoryTasks];
       const [moved] = reorderedTasks.splice(oldIndex, 1);
       reorderedTasks.splice(newIndex, 0, moved);
-      
+
       // Update order values
       const updatedCategoryTasks = reorderedTasks.map((task, index) => ({
         ...task,
         order: Date.now() + index,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       }));
-      
+
       return {
         ...state,
-        tasks: [...otherTasks, ...updatedCategoryTasks].sort((a, b) => a.order - b.order),
-        error: null
+        tasks: [...otherTasks, ...updatedCategoryTasks].sort(
+          (a, b) => a.order - b.order
+        ),
+        error: null,
       };
     }
 
     case 'CLEAR_COMPLETED': {
-      const updatedTasks = state.tasks.filter(task => task.status !== TASK_STATUS.COMPLETED);
-      
+      const updatedTasks = state.tasks.filter(
+        (task) => task.status !== TASK_STATUS.COMPLETED
+      );
+
       return {
         ...state,
         tasks: updatedTasks,
-        error: null
+        error: null,
       };
     }
 
     case 'SET_FILTER': {
       return {
         ...state,
-        filter: action.payload
+        filter: action.payload,
       };
     }
 
     case 'SET_SEARCH': {
       return {
         ...state,
-        searchQuery: action.payload
+        searchQuery: action.payload,
       };
     }
 
     case 'SET_ERROR': {
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
       };
     }
 
     case 'CLEAR_ERROR': {
       return {
         ...state,
-        error: null
+        error: null,
       };
     }
 
@@ -199,7 +211,7 @@ const initialState = {
   loading: true,
   error: null,
   filter: 'all',
-  searchQuery: ''
+  searchQuery: '',
 };
 
 export const TaskProvider = ({ children }) => {
@@ -250,7 +262,10 @@ export const TaskProvider = ({ children }) => {
     },
 
     reorderTasks: (category, oldIndex, newIndex) => {
-      dispatch({ type: 'REORDER_TASKS', payload: { category, oldIndex, newIndex } });
+      dispatch({
+        type: 'REORDER_TASKS',
+        payload: { category, oldIndex, newIndex },
+      });
     },
 
     clearCompleted: () => {
@@ -267,7 +282,7 @@ export const TaskProvider = ({ children }) => {
 
     clearError: () => {
       dispatch({ type: 'CLEAR_ERROR' });
-    }
+    },
   };
 
   return (

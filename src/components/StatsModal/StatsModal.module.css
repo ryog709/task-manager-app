@@ -236,28 +236,28 @@
     width: 95%;
     max-height: 95vh;
   }
-  
+
   .header {
     padding: var(--spacing-md);
   }
-  
+
   .content {
     padding: var(--spacing-md);
     max-height: calc(95vh - 80px);
   }
-  
+
   .title {
     font-size: var(--font-size-lg);
   }
-  
+
   .statsGrid {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
-  
+
   .categoryStats {
     grid-template-columns: 1fr;
   }
-  
+
   .periodStats {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
