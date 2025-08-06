@@ -26,13 +26,13 @@ jobs:
         run: yarn lint
 
       - name: Format check
-        run: yarn format --check
+        run: yarn format:check
 
       - name: Build
         run: yarn build
 
       - name: Test
-        run: yarn test
+        run: yarn test --run
 
   deploy:
     needs: test
