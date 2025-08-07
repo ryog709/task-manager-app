@@ -4,6 +4,7 @@ import {
   closestCenter,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -159,7 +160,19 @@ const TaskInput = ({ onAdd }) => {
 const TaskList = ({ tasks }) => {
   const { actions } = useTask();
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      // マウス/タッチでの移動距離が8px以上の場合のみドラッグ開始
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      // タッチのアクティベーション設定
+      activationConstraint: {
+        delay: 250, // 250ms長押しでドラッグ開始
+        tolerance: 8, // 8px以内の移動は許可
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -219,10 +232,10 @@ const SortableTaskItem = ({ task }) => {
     <div
       ref={setNodeRef}
       style={style}
-      {...attributes}
       className={`${styles.taskItem} ${task.status === 'completed' ? styles.completed : ''} ${isDragging ? styles.dragging : ''}`}
     >
       <div
+        {...attributes}
         {...listeners}
         className={styles.dragHandle}
         aria-label="タスクをドラッグして並び替え"
