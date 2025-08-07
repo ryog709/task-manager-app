@@ -14,7 +14,6 @@ const ThemeToggle = () => {
       <span className={styles.slider}>
         <span className={styles.icon}>{isDark ? '🌙' : '☀️'}</span>
       </span>
-      <span className={styles.label}>{isDark ? 'ダーク' : 'ライト'}</span>
     </button>
   );
 };

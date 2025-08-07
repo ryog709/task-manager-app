@@ -9,7 +9,7 @@
   border-radius: var(--border-radius-full);
   cursor: pointer;
   transition: all var(--transition-fast);
-  min-width: 80px;
+  min-width: 60px;
   height: 36px;
   overflow: hidden;
 }
@@ -52,24 +52,6 @@
 .icon {
   font-size: var(--font-size-sm);
   line-height: 1;
-}
-
-.label {
-  position: absolute;
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-secondary);
-  white-space: nowrap;
-  z-index: 1;
-  transition: all var(--transition-base);
-}
-
-.toggle.light .label {
-  right: 8px;
-}
-
-.toggle.dark .label {
-  left: 8px;
 }
 
 /* ライトモード時のスタイリング */
@@ -125,10 +107,6 @@
 
   .toggle.dark .slider {
     transform: translateX(32px);
-  }
-
-  .label {
-    display: none;
   }
 
   .icon {
