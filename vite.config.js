@@ -21,9 +21,16 @@ export default defineConfig({
         start_url: '/task-manager-app/',
         icons: [
           {
-            src: '/task-manager-app/vite.svg',
-            sizes: 'any',
-            type: 'image/svg+xml'
+            src: '/task-manager-app/icon-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
+          {
+            src: '/task-manager-app/icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
           }
         ]
       },
