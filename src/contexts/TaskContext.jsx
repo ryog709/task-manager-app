@@ -378,8 +378,9 @@ export const TaskProvider = ({ children }) => {
         // 少し遅延を入れて状態の更新を待つ
         setTimeout(async () => {
           const updatedTasks = storage.getTasks();
-          const relevantTask = updatedTasks.find((t) =>
-            action.payload.id ? t.id === action.payload.id : true
+          const taskId = action.payload?.id || action.payload;
+          const relevantTask = updatedTasks.find((t) => 
+            taskId ? t.id === taskId : true
           );
 
           if (relevantTask) {
