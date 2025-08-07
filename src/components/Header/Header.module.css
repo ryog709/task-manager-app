@@ -57,18 +57,16 @@
 }
 
 .statsButton {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--border-radius-full);
   background: rgba(255, 255, 255, 0.2);
   color: var(--text-inverse);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-lg);
   transition: all var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-  white-space: nowrap;
 }
 
 .statsButton:hover {

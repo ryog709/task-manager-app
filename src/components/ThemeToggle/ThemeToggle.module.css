@@ -11,6 +11,7 @@
   transition: all var(--transition-fast);
   min-width: 80px;
   height: 36px;
+  overflow: hidden;
 }
 
 .toggle:hover {
@@ -23,7 +24,9 @@
 }
 
 .slider {
-  position: relative;
+  position: absolute;
+  left: 2px;
+  top: 2px;
   width: 28px;
   height: 28px;
   background: var(--primary-color);
@@ -33,11 +36,12 @@
   justify-content: center;
   transition: all var(--transition-base);
   box-shadow: var(--shadow-sm);
+  z-index: 2;
 }
 
 .toggle.dark .slider {
   background: var(--secondary-color);
-  transform: translateX(20px);
+  transform: translateX(44px);
 }
 
 .toggle.light .slider {
@@ -51,10 +55,21 @@
 }
 
 .label {
+  position: absolute;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   color: var(--text-secondary);
   white-space: nowrap;
+  z-index: 1;
+  transition: all var(--transition-base);
+}
+
+.toggle.light .label {
+  right: 8px;
+}
+
+.toggle.dark .label {
+  left: 8px;
 }
 
 /* ライトモード時のスタイリング */
@@ -109,7 +124,7 @@
   }
 
   .toggle.dark .slider {
-    transform: translateX(16px);
+    transform: translateX(32px);
   }
 
   .label {

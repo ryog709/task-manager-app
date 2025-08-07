@@ -37,7 +37,7 @@ const Header = () => {
               onClick={() => setShowStats(true)}
               aria-label="統計を表示"
             >
-              統計
+              📊
             </button>
             <ThemeToggle />
           </div>
