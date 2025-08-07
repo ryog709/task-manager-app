@@ -41,7 +41,7 @@
 
 .toggle.dark .slider {
   background: var(--secondary-color);
-  transform: translateX(44px);
+  transform: translateX(25px);
 }
 
 .toggle.light .slider {
@@ -106,7 +106,7 @@
   }
 
   .toggle.dark .slider {
-    transform: translateX(32px);
+    transform: translateX(30px);
   }
 
   .icon {
