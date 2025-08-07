@@ -65,7 +65,7 @@ const LoginButton = () => {
             <span className={styles.userName}>
               {state.user.displayName || 'ユーザー'}
             </span>
-            <span className={styles.syncStatus}>🔄 同期中</span>
+            <span className={styles.syncStatus}>同期中</span>
           </div>
         </div>
         <button
@@ -74,7 +74,7 @@ const LoginButton = () => {
           className={styles.signOutButton}
           aria-label="ログアウト"
         >
-          {loading ? '⏳' : '👋'}
+          {loading ? 'ログアウト中...' : 'ログアウト'}
         </button>
       </div>
     );
@@ -93,10 +93,7 @@ const LoginButton = () => {
             <span>ログイン中...</span>
           </>
         ) : (
-          <>
-            <span className={styles.googleIcon}>🔗</span>
-            <span>Googleでログイン</span>
-          </>
+          <span>Googleでログイン</span>
         )}
       </button>
       <p className={styles.description}>複数デバイス間でタスクを同期できます</p>
