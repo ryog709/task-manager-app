@@ -78,11 +78,11 @@ const TaskManager = ({ category }) => {
         </div>
       )}
 
-      <SearchBar />
-
       <div className={styles.inputSection}>
         <TaskInput onAdd={handleAddTask} />
       </div>
+
+      <SearchBar />
 
       <div className={styles.tasksSection}>
         {activeTasks.length === 0 && completedTasks.length === 0 ? (
@@ -174,7 +174,8 @@ const TaskList = ({ tasks }) => {
 
       if (tasks.length > 0) {
         const category = tasks[0].category;
-        actions.reorderTasks(category, oldIndex, newIndex);
+        const status = tasks[0].status;
+        actions.reorderTasks(category, status, oldIndex, newIndex);
       }
     }
   };

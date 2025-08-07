@@ -64,17 +64,29 @@
   display: flex;
   gap: var(--spacing-md);
   background: var(--bg-secondary);
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg);
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-xl);
 }
 
 .input {
   flex: 1;
-  border: none;
-  background: transparent;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  border-radius: var(--border-radius-md);
   font-size: var(--font-size-md);
-  padding: var(--spacing-sm);
+  padding: var(--spacing-md);
+  transition: all var(--transition-fast);
+}
+
+.input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input::placeholder {
+  color: var(--text-tertiary);
 }
 
 .input:focus {

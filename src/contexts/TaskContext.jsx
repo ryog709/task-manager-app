@@ -133,20 +133,22 @@ const taskReducer = (state, action) => {
     }
 
     case 'REORDER_TASKS': {
-      const { category, oldIndex, newIndex } = action.payload;
-      const categoryTasks = state.tasks.filter(
-        (task) => task.category === category
+      const { category, status, oldIndex, newIndex } = action.payload;
+      
+      // Filter tasks by category and status
+      const targetTasks = state.tasks.filter(
+        (task) => task.category === category && task.status === status
       );
       const otherTasks = state.tasks.filter(
-        (task) => task.category !== category
+        (task) => !(task.category === category && task.status === status)
       );
 
-      const reorderedTasks = [...categoryTasks];
+      const reorderedTasks = [...targetTasks];
       const [moved] = reorderedTasks.splice(oldIndex, 1);
       reorderedTasks.splice(newIndex, 0, moved);
 
-      // Update order values
-      const updatedCategoryTasks = reorderedTasks.map((task, index) => ({
+      // Update order values for reordered tasks
+      const updatedTargetTasks = reorderedTasks.map((task, index) => ({
         ...task,
         order: Date.now() + index,
         updatedAt: new Date().toISOString(),
@@ -154,7 +156,7 @@ const taskReducer = (state, action) => {
 
       return {
         ...state,
-        tasks: [...otherTasks, ...updatedCategoryTasks].sort(
+        tasks: [...otherTasks, ...updatedTargetTasks].sort(
           (a, b) => a.order - b.order
         ),
         error: null,
@@ -261,10 +263,10 @@ export const TaskProvider = ({ children }) => {
       dispatch({ type: 'UNCOMPLETE_TASK', payload: id });
     },
 
-    reorderTasks: (category, oldIndex, newIndex) => {
+    reorderTasks: (category, status, oldIndex, newIndex) => {
       dispatch({
         type: 'REORDER_TASKS',
-        payload: { category, oldIndex, newIndex },
+        payload: { category, status, oldIndex, newIndex },
       });
     },
 
