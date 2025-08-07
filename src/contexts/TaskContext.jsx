@@ -379,7 +379,7 @@ export const TaskProvider = ({ children }) => {
         setTimeout(async () => {
           const updatedTasks = storage.getTasks();
           const taskId = action.payload?.id || action.payload;
-          const relevantTask = updatedTasks.find((t) => 
+          const relevantTask = updatedTasks.find((t) =>
             taskId ? t.id === taskId : true
           );
 
