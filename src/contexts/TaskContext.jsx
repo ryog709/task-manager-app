@@ -2,6 +2,14 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { storage } from '../utils/storage';
 import { validateTask, createNewTask } from '../utils/validation';
 import { TASK_STATUS } from '../utils/constants';
+import { useAuth } from './AuthContext';
+import {
+  fetchUserTasks,
+  saveBatchTasksToFirestore,
+  saveTaskToFirestore,
+  subscribeToTasks,
+  isSyncEnabled,
+} from '../firebase/firestore';
 
 const TaskContext = createContext();
 
@@ -203,6 +211,46 @@ const taskReducer = (state, action) => {
       };
     }
 
+    case 'SET_SYNCING': {
+      return {
+        ...state,
+        syncing: action.payload,
+      };
+    }
+
+    case 'SET_SYNC_ERROR': {
+      return {
+        ...state,
+        syncError: action.payload,
+        syncing: false,
+      };
+    }
+
+    case 'CLEAR_SYNC_ERROR': {
+      return {
+        ...state,
+        syncError: null,
+      };
+    }
+
+    case 'SET_LAST_SYNC_TIME': {
+      return {
+        ...state,
+        lastSyncTime: action.payload,
+      };
+    }
+
+    case 'SYNC_TASKS': {
+      return {
+        ...state,
+        tasks: action.payload,
+        loading: false,
+        syncing: false,
+        lastSyncTime: new Date().toISOString(),
+        syncError: null,
+      };
+    }
+
     default:
       return state;
   }
@@ -214,11 +262,16 @@ const initialState = {
   error: null,
   filter: 'all',
   searchQuery: '',
+  syncing: false,
+  lastSyncTime: null,
+  syncError: null,
 };
 
 export const TaskProvider = ({ children }) => {
   const [state, dispatch] = useReducer(taskReducer, initialState);
+  const auth = useAuth();
 
+  // ローカルタスクの読み込み
   useEffect(() => {
     const loadTasks = async () => {
       try {
@@ -232,46 +285,154 @@ export const TaskProvider = ({ children }) => {
     loadTasks();
   }, []);
 
+  // ローカルストレージへの保存
   useEffect(() => {
     if (!state.loading) {
       storage.setTasks(state.tasks);
     }
   }, [state.tasks, state.loading]);
 
+  // Firebase同期機能
+  useEffect(() => {
+    if (!auth.state.isAuthenticated || !isSyncEnabled()) {
+      return;
+    }
+
+    dispatch({ type: 'SET_SYNCING', payload: true });
+
+    // 初回同期: Firestoreからタスクを取得
+    const initialSync = async () => {
+      try {
+        const cloudTasks = await fetchUserTasks();
+        const localTasks = storage.getTasks();
+        
+        // ローカルとクラウドのタスクをマージ
+        const mergedTasks = mergeTaskData(localTasks, cloudTasks);
+        
+        dispatch({ type: 'SYNC_TASKS', payload: mergedTasks });
+        
+        // マージされたタスクをFirestoreにバックアップ
+        if (mergedTasks.length > 0) {
+          await saveBatchTasksToFirestore(mergedTasks);
+        }
+      } catch (error) {
+        console.error('Initial sync failed:', error);
+        dispatch({ type: 'SET_SYNC_ERROR', payload: 'Initial sync failed' });
+      }
+    };
+
+    // リアルタイム同期の設定
+    const unsubscribe = subscribeToTasks(
+      (cloudTasks) => {
+        // リアルタイムでタスクが更新された場合
+        dispatch({ type: 'SYNC_TASKS', payload: cloudTasks });
+      },
+      (error) => {
+        console.error('Real-time sync error:', error);
+        dispatch({ type: 'SET_SYNC_ERROR', payload: 'Sync connection lost' });
+      }
+    );
+
+    initialSync();
+
+    return unsubscribe;
+  }, [auth.state.isAuthenticated]);
+
+  // タスクマージロジック
+  const mergeTaskData = (localTasks, cloudTasks) => {
+    const mergedMap = new Map();
+    
+    // クラウドタスクを優先してマップに追加
+    cloudTasks.forEach(task => {
+      mergedMap.set(task.id, task);
+    });
+    
+    // ローカルタスクを追加（クラウドにない場合のみ）
+    localTasks.forEach(task => {
+      if (!mergedMap.has(task.id)) {
+        mergedMap.set(task.id, task);
+      } else {
+        // 同じIDがある場合、更新日時で判定
+        const cloudTask = mergedMap.get(task.id);
+        const localUpdated = new Date(task.updatedAt || task.createdAt);
+        const cloudUpdated = new Date(cloudTask.updatedAt || cloudTask.createdAt);
+        
+        if (localUpdated > cloudUpdated) {
+          mergedMap.set(task.id, task);
+        }
+      }
+    });
+    
+    return Array.from(mergedMap.values()).sort((a, b) => a.order - b.order);
+  };
+
+  // Firestore同期付きアクション
+  const syncTaskAction = async (action) => {
+    dispatch(action);
+    
+    // Firebase同期が有効な場合、変更をクラウドに送信
+    if (isSyncEnabled() && auth.state.isAuthenticated) {
+      try {
+        // 少し遅延を入れて状態の更新を待つ
+        setTimeout(async () => {
+          const updatedTasks = storage.getTasks();
+          const relevantTask = updatedTasks.find(t => 
+            action.payload.id ? t.id === action.payload.id : true
+          );
+          
+          if (relevantTask) {
+            await saveTaskToFirestore(relevantTask);
+          }
+        }, 100);
+      } catch (error) {
+        console.error('Failed to sync task to Firebase:', error);
+        dispatch({ type: 'SET_SYNC_ERROR', payload: 'Sync failed' });
+      }
+    }
+  };
+
   const actions = {
-    addTask: (text, category, priority) => {
-      dispatch({ type: 'ADD_TASK', payload: { text, category, priority } });
+    addTask: async (text, category, priority) => {
+      const action = { type: 'ADD_TASK', payload: { text, category, priority } };
+      await syncTaskAction(action);
     },
 
-    updateTask: (id, updates) => {
-      dispatch({ type: 'UPDATE_TASK', payload: { id, updates } });
+    updateTask: async (id, updates) => {
+      const action = { type: 'UPDATE_TASK', payload: { id, updates } };
+      await syncTaskAction(action);
     },
 
-    deleteTask: (id) => {
-      dispatch({ type: 'DELETE_TASK', payload: id });
+    deleteTask: async (id) => {
+      const action = { type: 'DELETE_TASK', payload: id };
+      await syncTaskAction(action);
     },
 
-    restoreTask: (id) => {
-      dispatch({ type: 'RESTORE_TASK', payload: id });
+    restoreTask: async (id) => {
+      const action = { type: 'RESTORE_TASK', payload: id };
+      await syncTaskAction(action);
     },
 
-    completeTask: (id) => {
-      dispatch({ type: 'COMPLETE_TASK', payload: id });
+    completeTask: async (id) => {
+      const action = { type: 'COMPLETE_TASK', payload: id };
+      await syncTaskAction(action);
     },
 
-    uncompleteTask: (id) => {
-      dispatch({ type: 'UNCOMPLETE_TASK', payload: id });
+    uncompleteTask: async (id) => {
+      const action = { type: 'UNCOMPLETE_TASK', payload: id };
+      await syncTaskAction(action);
     },
 
-    reorderTasks: (category, status, oldIndex, newIndex) => {
-      dispatch({
+    reorderTasks: async (category, status, oldIndex, newIndex) => {
+      const action = {
         type: 'REORDER_TASKS',
         payload: { category, status, oldIndex, newIndex },
-      });
+      };
+      await syncTaskAction(action);
     },
 
-    clearCompleted: () => {
-      dispatch({ type: 'CLEAR_COMPLETED' });
+    clearCompleted: async () => {
+      const action = { type: 'CLEAR_COMPLETED' };
+      await syncTaskAction(action);
     },
 
     setFilter: (filter) => {
@@ -284,6 +445,32 @@ export const TaskProvider = ({ children }) => {
 
     clearError: () => {
       dispatch({ type: 'CLEAR_ERROR' });
+    },
+
+    clearSyncError: () => {
+      dispatch({ type: 'CLEAR_SYNC_ERROR' });
+    },
+
+    // 手動同期
+    manualSync: async () => {
+      if (!isSyncEnabled() || !auth.state.isAuthenticated) {
+        return;
+      }
+
+      dispatch({ type: 'SET_SYNCING', payload: true });
+
+      try {
+        const localTasks = storage.getTasks();
+        if (localTasks.length > 0) {
+          await saveBatchTasksToFirestore(localTasks);
+          dispatch({ type: 'SET_LAST_SYNC_TIME', payload: new Date().toISOString() });
+        }
+      } catch (error) {
+        console.error('Manual sync failed:', error);
+        dispatch({ type: 'SET_SYNC_ERROR', payload: 'Manual sync failed' });
+      } finally {
+        dispatch({ type: 'SET_SYNCING', payload: false });
+      }
     },
   };
 

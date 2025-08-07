@@ -5,6 +5,14 @@
   text-align: center;
 }
 
+.sync-section {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--spacing-md) 0;
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
