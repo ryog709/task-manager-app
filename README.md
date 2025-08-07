@@ -9,9 +9,12 @@
 - 🔄 **ドラッグ&ドロップ**: 直感的なタスクの並び替え
 - 🔍 **検索・フィルタリング**: 高速なタスク検索とステータス絞り込み
 - 📊 **統計ダッシュボード**: 完了率・カテゴリ別・期間別の詳細統計
+- 🔐 **Firebase認証**: Googleアカウントでの安全なログイン
+- ☁️ **クラウド同期**: 複数デバイス間でのリアルタイムタスク同期
 - 🌙 **ダークモード**: システム設定連動 + 手動切り替え
 - 📱 **PWA対応**: オフライン動作・ホーム画面追加可能
-- 💾 **データ永続化**: localStorage自動保存
+- 💾 **データ永続化**: Firebase Firestore + localStorage自動保存
+- 🔌 **オフライン対応**: ネットワーク切断時もアプリ継続使用可能
 - 📱 **レスポンシブ**: モバイル・タブレット・デスクトップ対応
 - ♿ **アクセシビリティ**: WCAG 2.1 AA準拠
 
@@ -21,16 +24,22 @@
 
 ## 🛠️ 技術スタック
 
-- **フレームワーク**: React 18
-- **ビルドツール**: Vite
+- **フレームワーク**: React 19
+- **ビルドツール**: Vite 7
+- **認証・データベース**: Firebase 12.0.0
+  - Firebase Authentication (Google認証)
+  - Cloud Firestore (リアルタイムデータベース)
 - **状態管理**: Context API + useReducer
 - **スタイリング**: CSS Modules + CSS Variables
 - **ドラッグ&ドロップ**: @dnd-kit
-- **PWA**: vite-plugin-pwa
+- **PWA**: vite-plugin-pwa + Workbox
 - **テスト**: Vitest + React Testing Library
-- **デプロイ**: GitHub Actions + GitHub Pages
+- **コード品質**: ESLint + Prettier + Husky + lint-staged
+- **デプロイ**: GitHub Pages
 
 ## 💻 開発環境セットアップ
+
+### 基本セットアップ
 
 ```bash
 # リポジトリクローン
@@ -45,6 +54,24 @@ yarn dev
 
 # ブラウザで http://localhost:5173 を開く
 ```
+
+### Firebase設定（オプション）
+
+クラウド同期機能を使用する場合は、以下の環境変数を設定してください：
+
+1. Firebase プロジェクトを作成（[Firebase Console](https://console.firebase.google.com/)）
+2. プロジェクトルートに `.env.local` ファイルを作成：
+
+```bash
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+> 💡 **注意**: Firebase設定がない場合でも、アプリはローカルストレージモードで動作します。
 
 ## 📦 ビルド
 
@@ -81,9 +108,24 @@ yarn format
 - **プッシュ通知**: 重要なタスクの通知（将来実装予定）
 - **バックグラウンド同期**: 接続復旧時の自動同期（将来実装予定）
 
+## ☁️ Firebase機能
+
+### 認証
+
+- **Google認証**: 安全なGoogleアカウントログイン
+- **自動認証**: ページリロード時の認証状態維持
+- **オプショナル**: Firebase未設定でもローカルモードで動作
+
+### データ同期
+
+- **リアルタイム同期**: 複数デバイス間でのタスク自動同期
+- **オフライン対応**: ネット切断時もローカルで動作
+- **自動復旧**: 接続復旧時の自動データ同期
+
 ## 🎨 デザインシステム
 
 ### カラーパレット
+
 - **プライマリ**: `#667eea` → `#764ba2`（グラデーション）
 - **成功**: `#10b981`
 - **警告**: `#f59e0b`
@@ -91,6 +133,7 @@ yarn format
 - **情報**: `#3b82f6`
 
 ### アニメーション
+
 - **高速**: 150ms
 - **標準**: 250ms
 - **低速**: 350ms
@@ -112,10 +155,17 @@ src/
 │   ├── TabNavigation/
 │   ├── TaskManager/
 │   ├── SearchBar/
-│   └── StatsModal/
+│   ├── StatsModal/
+│   ├── LoginButton/     # Firebase認証ボタン
+│   └── ThemeToggle/
 ├── contexts/            # React Context
 │   ├── TaskContext.jsx
-│   └── ThemeContext.jsx
+│   ├── ThemeContext.jsx
+│   └── AuthContext.jsx  # 認証状態管理
+├── firebase/            # Firebase設定・関数
+│   ├── config.js        # Firebase初期化設定
+│   ├── auth.js          # 認証関連の関数
+│   └── firestore.js     # データベース操作
 ├── hooks/               # カスタムフック
 │   ├── useLocalStorage.js
 │   ├── useDebounce.js
@@ -149,6 +199,7 @@ src/
 ## 👨‍💻 開発者
 
 **Claude Code Assistant**
+
 - Email: noreply@anthropic.com
 
 ## 🙏 謝辞
@@ -163,4 +214,5 @@ src/
 ---
 
 🚀 **Let's manage tasks efficiently!** ✨
+
 # デプロイ完了
