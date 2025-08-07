@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useTheme } from '../../contexts/ThemeContext';
 import { useTask } from '../../contexts/TaskContext';
 import StatsModal from '../StatsModal/StatsModal';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import styles from './Header.module.css';
 
 const Header = () => {
-  const { isDark, toggleTheme } = useTheme();
   const { state } = useTask();
   const [showStats, setShowStats] = useState(false);
 
@@ -38,17 +37,9 @@ const Header = () => {
               onClick={() => setShowStats(true)}
               aria-label="統計を表示"
             >
-              📊
+              統計
             </button>
-            <button
-              className={styles.themeToggle}
-              onClick={toggleTheme}
-              aria-label={
-                isDark ? 'ライトモードに切り替え' : 'ダークモードに切り替え'
-              }
-            >
-              {isDark ? '☀️' : '🌙'}
-            </button>
+            <ThemeToggle />
           </div>
         </div>
       </div>

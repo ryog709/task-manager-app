@@ -1,0 +1,122 @@
+.toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs);
+  background: transparent;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-width: 80px;
+  height: 36px;
+}
+
+.toggle:hover {
+  border-color: var(--primary-color);
+  transform: scale(1.05);
+}
+
+.toggle:active {
+  transform: scale(0.95);
+}
+
+.slider {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  background: var(--primary-color);
+  border-radius: var(--border-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.toggle.dark .slider {
+  background: var(--secondary-color);
+  transform: translateX(20px);
+}
+
+.toggle.light .slider {
+  background: var(--primary-color);
+  transform: translateX(0);
+}
+
+.icon {
+  font-size: var(--font-size-sm);
+  line-height: 1;
+}
+
+.label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* ライトモード時のスタイリング */
+.toggle.light {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 193, 7, 0.1),
+    rgba(255, 152, 0, 0.1)
+  );
+  border-color: rgba(255, 193, 7, 0.3);
+}
+
+.toggle.light:hover {
+  border-color: rgba(255, 193, 7, 0.6);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 193, 7, 0.2),
+    rgba(255, 152, 0, 0.2)
+  );
+}
+
+/* ダークモード時のスタイリング */
+.toggle.dark {
+  background: linear-gradient(
+    135deg,
+    rgba(63, 81, 181, 0.1),
+    rgba(103, 58, 183, 0.1)
+  );
+  border-color: rgba(63, 81, 181, 0.3);
+}
+
+.toggle.dark:hover {
+  border-color: rgba(63, 81, 181, 0.6);
+  background: linear-gradient(
+    135deg,
+    rgba(63, 81, 181, 0.2),
+    rgba(103, 58, 183, 0.2)
+  );
+}
+
+/* スマホ対応 */
+@media (max-width: 640px) {
+  .toggle {
+    min-width: 60px;
+    height: 32px;
+    gap: var(--spacing-xs);
+  }
+
+  .slider {
+    width: 24px;
+    height: 24px;
+  }
+
+  .toggle.dark .slider {
+    transform: translateX(16px);
+  }
+
+  .label {
+    display: none;
+  }
+
+  .icon {
+    font-size: var(--font-size-xs);
+  }
+}

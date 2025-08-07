@@ -56,28 +56,27 @@
   gap: var(--spacing-sm);
 }
 
-.statsButton,
-.themeToggle {
-  width: 40px;
-  height: 40px;
+.statsButton {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  height: 36px;
   border-radius: var(--border-radius-full);
   background: rgba(255, 255, 255, 0.2);
   color: var(--text-inverse);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   transition: all var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 }
 
-.statsButton:hover,
-.themeToggle:hover {
+.statsButton:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
 
-.statsButton:active,
-.themeToggle:active {
+.statsButton:active {
   transform: translateY(0);
 }
 
