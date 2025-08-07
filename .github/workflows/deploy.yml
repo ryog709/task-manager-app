@@ -25,8 +25,12 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - name: Format check
-        run: yarn format:check
+      - name: Auto format and commit
+        run: |
+          yarn format
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git diff --exit-code || (git add . && git commit -m "Auto-format code [skip ci]" && git push)
 
       - name: Build
         run: yarn build
