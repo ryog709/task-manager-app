@@ -7,7 +7,7 @@
 .tabs {
   display: flex;
   gap: var(--spacing-md);
-  overflow-x: clip;
+  overflow-x: auto;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -38,7 +38,6 @@
   background: var(--bg-tertiary);
   color: var(--text-primary);
   border-color: var(--primary-color);
-  transform: translateY(-1px);
 }
 
 .tab.active {
