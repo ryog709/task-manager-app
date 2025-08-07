@@ -1,8 +1,8 @@
-import { 
-  signInWithPopup, 
-  GoogleAuthProvider, 
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
   signOut as firebaseSignOut,
-  onAuthStateChanged
+  onAuthStateChanged,
 } from 'firebase/auth';
 import { auth, isFirebaseConfigured } from './config';
 
@@ -72,7 +72,7 @@ export const getCurrentUser = () => {
   if (!isFirebaseConfigured()) {
     return null;
   }
-  
+
   return auth?.currentUser || null;
 };
 

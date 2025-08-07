@@ -142,7 +142,7 @@ const taskReducer = (state, action) => {
 
     case 'REORDER_TASKS': {
       const { category, status, oldIndex, newIndex } = action.payload;
-      
+
       // Filter tasks by category and status
       const targetTasks = state.tasks.filter(
         (task) => task.category === category && task.status === status
@@ -305,12 +305,12 @@ export const TaskProvider = ({ children }) => {
       try {
         const cloudTasks = await fetchUserTasks();
         const localTasks = storage.getTasks();
-        
+
         // ローカルとクラウドのタスクをマージ
         const mergedTasks = mergeTaskData(localTasks, cloudTasks);
-        
+
         dispatch({ type: 'SYNC_TASKS', payload: mergedTasks });
-        
+
         // マージされたタスクをFirestoreにバックアップ
         if (mergedTasks.length > 0) {
           await saveBatchTasksToFirestore(mergedTasks);
@@ -341,45 +341,47 @@ export const TaskProvider = ({ children }) => {
   // タスクマージロジック
   const mergeTaskData = (localTasks, cloudTasks) => {
     const mergedMap = new Map();
-    
+
     // クラウドタスクを優先してマップに追加
-    cloudTasks.forEach(task => {
+    cloudTasks.forEach((task) => {
       mergedMap.set(task.id, task);
     });
-    
+
     // ローカルタスクを追加（クラウドにない場合のみ）
-    localTasks.forEach(task => {
+    localTasks.forEach((task) => {
       if (!mergedMap.has(task.id)) {
         mergedMap.set(task.id, task);
       } else {
         // 同じIDがある場合、更新日時で判定
         const cloudTask = mergedMap.get(task.id);
         const localUpdated = new Date(task.updatedAt || task.createdAt);
-        const cloudUpdated = new Date(cloudTask.updatedAt || cloudTask.createdAt);
-        
+        const cloudUpdated = new Date(
+          cloudTask.updatedAt || cloudTask.createdAt
+        );
+
         if (localUpdated > cloudUpdated) {
           mergedMap.set(task.id, task);
         }
       }
     });
-    
+
     return Array.from(mergedMap.values()).sort((a, b) => a.order - b.order);
   };
 
   // Firestore同期付きアクション
   const syncTaskAction = async (action) => {
     dispatch(action);
-    
+
     // Firebase同期が有効な場合、変更をクラウドに送信
     if (isSyncEnabled() && auth.state.isAuthenticated) {
       try {
         // 少し遅延を入れて状態の更新を待つ
         setTimeout(async () => {
           const updatedTasks = storage.getTasks();
-          const relevantTask = updatedTasks.find(t => 
+          const relevantTask = updatedTasks.find((t) =>
             action.payload.id ? t.id === action.payload.id : true
           );
-          
+
           if (relevantTask) {
             await saveTaskToFirestore(relevantTask);
           }
@@ -393,7 +395,10 @@ export const TaskProvider = ({ children }) => {
 
   const actions = {
     addTask: async (text, category, priority) => {
-      const action = { type: 'ADD_TASK', payload: { text, category, priority } };
+      const action = {
+        type: 'ADD_TASK',
+        payload: { text, category, priority },
+      };
       await syncTaskAction(action);
     },
 
@@ -463,7 +468,10 @@ export const TaskProvider = ({ children }) => {
         const localTasks = storage.getTasks();
         if (localTasks.length > 0) {
           await saveBatchTasksToFirestore(localTasks);
-          dispatch({ type: 'SET_LAST_SYNC_TIME', payload: new Date().toISOString() });
+          dispatch({
+            type: 'SET_LAST_SYNC_TIME',
+            payload: new Date().toISOString(),
+          });
         }
       } catch (error) {
         console.error('Manual sync failed:', error);

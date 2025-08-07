@@ -116,16 +116,16 @@
     gap: var(--spacing-sm);
     padding: var(--spacing-xs);
   }
-  
+
   .signInButton {
     padding: var(--spacing-xs) var(--spacing-sm);
     font-size: var(--font-size-sm);
   }
-  
+
   .description {
     display: none;
   }
-  
+
   .userDetails {
     display: none;
   }

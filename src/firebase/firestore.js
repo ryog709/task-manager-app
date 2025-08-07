@@ -38,8 +38,10 @@ const firestoreDocToTask = (doc) => {
   return {
     ...data,
     id: doc.id,
-    createdAt: data.createdAt?.toDate()?.toISOString() || new Date().toISOString(),
-    updatedAt: data.updatedAt?.toDate()?.toISOString() || new Date().toISOString(),
+    createdAt:
+      data.createdAt?.toDate()?.toISOString() || new Date().toISOString(),
+    updatedAt:
+      data.updatedAt?.toDate()?.toISOString() || new Date().toISOString(),
     completedAt: data.completedAt?.toDate()?.toISOString() || null,
     deletedAt: data.deletedAt?.toDate()?.toISOString() || null,
     syncedAt: data.syncedAt?.toDate()?.toISOString() || null,
@@ -63,7 +65,7 @@ export const fetchUserTasks = async () => {
 
     const q = query(tasksCollection, orderBy('order', 'asc'));
     const querySnapshot = await getDocs(q);
-    
+
     const tasks = [];
     querySnapshot.forEach((doc) => {
       tasks.push(firestoreDocToTask(doc));
@@ -93,7 +95,7 @@ export const saveTaskToFirestore = async (task) => {
 
     const taskDoc = doc(tasksCollection, task.id);
     await setDoc(taskDoc, taskToFirestoreDoc(task), { merge: true });
-    
+
     return true;
   } catch (error) {
     console.error('Failed to save task to Firestore:', error);
@@ -117,7 +119,7 @@ export const saveBatchTasksToFirestore = async (tasks) => {
     if (!tasksCollection) return false;
 
     // 並列処理で高速化
-    const savePromises = tasks.map(task => {
+    const savePromises = tasks.map((task) => {
       const taskDoc = doc(tasksCollection, task.id);
       return setDoc(taskDoc, taskToFirestoreDoc(task), { merge: true });
     });
@@ -147,7 +149,7 @@ export const deleteTaskFromFirestore = async (taskId) => {
 
     const taskDoc = doc(tasksCollection, taskId);
     await deleteDoc(taskDoc);
-    
+
     return true;
   } catch (error) {
     console.error('Failed to delete task from Firestore:', error);
@@ -173,7 +175,7 @@ export const subscribeToTasks = (onTasksChange, onError) => {
     if (!tasksCollection) return () => {};
 
     const q = query(tasksCollection, orderBy('order', 'asc'));
-    
+
     return onSnapshot(
       q,
       (querySnapshot) => {
@@ -198,7 +200,7 @@ export const subscribeToTasks = (onTasksChange, onError) => {
 // オンライン/オフライン制御
 export const goOnline = async () => {
   if (!isFirebaseConfigured() || !db) return;
-  
+
   try {
     await enableNetwork(db);
   } catch (error) {
@@ -208,7 +210,7 @@ export const goOnline = async () => {
 
 export const goOffline = async () => {
   if (!isFirebaseConfigured() || !db) return;
-  
+
   try {
     await disableNetwork(db);
   } catch (error) {

@@ -14,7 +14,7 @@ const LoginButton = () => {
 
   const handleSignIn = async () => {
     if (loading) return;
-    
+
     setLoading(true);
     actions.clearError();
 
@@ -29,7 +29,7 @@ const LoginButton = () => {
 
   const handleSignOut = async () => {
     if (loading) return;
-    
+
     setLoading(true);
     actions.clearError();
 
@@ -65,9 +65,7 @@ const LoginButton = () => {
             <span className={styles.userName}>
               {state.user.displayName || 'ユーザー'}
             </span>
-            <span className={styles.syncStatus}>
-              🔄 同期中
-            </span>
+            <span className={styles.syncStatus}>🔄 同期中</span>
           </div>
         </div>
         <button
@@ -101,9 +99,7 @@ const LoginButton = () => {
           </>
         )}
       </button>
-      <p className={styles.description}>
-        複数デバイス間でタスクを同期できます
-      </p>
+      <p className={styles.description}>複数デバイス間でタスクを同期できます</p>
     </div>
   );
 };

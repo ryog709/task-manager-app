@@ -1,6 +1,10 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, enableNetwork, disableNetwork } from 'firebase/firestore';
+import {
+  getFirestore,
+  enableNetwork,
+  disableNetwork,
+} from 'firebase/firestore';
 
 // Firebase設定（環境変数から取得）
 const firebaseConfig = {
@@ -19,9 +23,11 @@ let db = null;
 
 // 環境変数が設定されているかチェック
 const isFirebaseConfigured = () => {
-  return firebaseConfig.apiKey && 
-         firebaseConfig.authDomain && 
-         firebaseConfig.projectId;
+  return (
+    firebaseConfig.apiKey &&
+    firebaseConfig.authDomain &&
+    firebaseConfig.projectId
+  );
 };
 
 if (isFirebaseConfigured()) {
@@ -29,7 +35,7 @@ if (isFirebaseConfigured()) {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     db = getFirestore(app);
-    
+
     // オフライン対応を有効にする
     if (db) {
       // Firestoreのオフライン永続化を有効にする
