@@ -9,9 +9,14 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Allow git push
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -28,9 +33,15 @@ jobs:
       - name: Auto format and commit
         run: |
           yarn format
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git diff --exit-code || (git add . && git commit -m "Auto-format code [skip ci]" && git push)
+          if ! git diff --exit-code; then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add -A
+            git commit -m "Auto-format code [skip ci]"
+            git push
+          else
+            echo "No formatting changes needed"
+          fi
 
       - name: Build
         run: yarn build
