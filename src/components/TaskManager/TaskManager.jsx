@@ -161,16 +161,16 @@ const TaskList = ({ tasks }) => {
   const { actions } = useTask();
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      // マウス/タッチでの移動距離が8px以上の場合のみドラッグ開始
+      // マウス/タッチでの移動距離制御
       activationConstraint: {
-        distance: 8,
+        distance: 5, // より敏感に反応
       },
     }),
     useSensor(TouchSensor, {
-      // タッチのアクティベーション設定
+      // スマホでのタッチ操作を最適化
       activationConstraint: {
-        delay: 250, // 250ms長押しでドラッグ開始
-        tolerance: 8, // 8px以内の移動は許可
+        delay: 150, // 150msに短縮してレスポンシブに
+        tolerance: 5, // 許容範囲を狭めて正確に
       },
     }),
     useSensor(KeyboardSensor, {

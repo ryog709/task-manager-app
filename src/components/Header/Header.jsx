@@ -33,6 +33,13 @@ const Header = () => {
 
           <div className={styles.actions}>
             <button
+              className={styles.reloadButton}
+              onClick={() => window.location.reload()}
+              aria-label="アプリを再読み込み"
+            >
+              🔄
+            </button>
+            <button
               className={styles.statsButton}
               onClick={() => setShowStats(true)}
               aria-label="統計を表示"

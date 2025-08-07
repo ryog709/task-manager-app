@@ -56,6 +56,7 @@
   gap: var(--spacing-sm);
 }
 
+.reloadButton,
 .statsButton {
   width: 40px;
   height: 40px;
@@ -69,11 +70,13 @@
   justify-content: center;
 }
 
+.reloadButton:hover,
 .statsButton:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
 
+.reloadButton:active,
 .statsButton:active {
   transform: translateY(0);
 }
