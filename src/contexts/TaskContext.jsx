@@ -370,23 +370,41 @@ export const TaskProvider = ({ children }) => {
 
   // Firestore同期付きアクション
   const syncTaskAction = async (action) => {
+    // まず状態を更新
     dispatch(action);
 
     // Firebase同期が有効な場合、変更をクラウドに送信
     if (isSyncEnabled() && auth.state.isAuthenticated) {
       try {
-        // 少し遅延を入れて状態の更新を待つ
-        setTimeout(async () => {
-          const updatedTasks = storage.getTasks();
-          const taskId = action.payload?.id || action.payload;
-          const relevantTask = updatedTasks.find((t) =>
-            taskId ? t.id === taskId : true
+        // 状態更新を待ってから同期
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        const updatedTasks = storage.getTasks();
+
+        if (action.type === 'ADD_TASK') {
+          // 新規追加されたタスクを見つける（最新のタスク）
+          const newTask = updatedTasks[updatedTasks.length - 1];
+          if (newTask) {
+            await saveTaskToFirestore(newTask);
+          }
+        } else if (action.type === 'REORDER_TASKS') {
+          // 並び替えの場合は影響を受けたタスクをすべて同期
+          const { category, status } = action.payload;
+          const affectedTasks = updatedTasks.filter(
+            (task) => task.category === category && task.status === status
           );
+          for (const task of affectedTasks) {
+            await saveTaskToFirestore(task);
+          }
+        } else {
+          // その他のアクション（更新、削除、完了など）
+          const taskId = action.payload?.id || action.payload;
+          const relevantTask = updatedTasks.find((t) => t.id === taskId);
 
           if (relevantTask) {
             await saveTaskToFirestore(relevantTask);
           }
-        }, 100);
+        }
       } catch (error) {
         console.error('Failed to sync task to Firebase:', error);
         dispatch({ type: 'SET_SYNC_ERROR', payload: 'Sync failed' });
