@@ -21,16 +21,21 @@ export default defineConfig({
         start_url: '/task-manager-app/',
         icons: [
           {
-            src: '/task-manager-app/icon-192.png',
+            src: '/task-manager-app/android-chrome-192x192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any maskable'
           },
           {
-            src: '/task-manager-app/icon-512.png',
+            src: '/task-manager-app/android-chrome-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
+          },
+          {
+            src: '/task-manager-app/apple-touch-icon.png',
+            sizes: '180x180',
+            type: 'image/png'
           }
         ]
       },
